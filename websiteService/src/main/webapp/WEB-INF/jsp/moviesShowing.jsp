@@ -11,7 +11,8 @@
 <body>
 	<jstl:forEach var="movie" items="${movies}">
 		<ul>
-			<li><!-- <input type="text" name="movieName" value=${movie.movieName} -->><a href="getMovieDetails?movieName=${movie.movieName}">${movie.movieName}</a></li>
+			<li><!-- <input type="text" name="movieName" value=${movie.movieName} -->
+			<a href="getMovieDetails?movieName=${movie.movieName}">${movie.movieName}</a></li>
 		</ul>
 	</jstl:forEach>
 </body>

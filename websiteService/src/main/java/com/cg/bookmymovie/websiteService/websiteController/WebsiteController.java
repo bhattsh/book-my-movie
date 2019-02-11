@@ -1,11 +1,13 @@
 package com.cg.bookmymovie.websiteService.websiteController;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,21 +23,28 @@ import com.cg.bookmymovie.screeningservice.entity.Address;
 import com.cg.bookmymovie.screeningservice.entity.Screening;
 
 @RestController
+@EnableOAuth2Sso
 public class WebsiteController {
 
+	 @RequestMapping("/user")
+	  public Principal user(Principal principal) {
+	    return principal;
+	  }
+	
+	
 	@Autowired
 	private RestTemplate template;
 
-	@RequestMapping("/")
+	@RequestMapping("/home")
 	public ModelAndView home() {
 		return new ModelAndView("hello", "message", "shubham bhatt");
 	}
 
-	
-	@RequestMapping("/welcome")
-	public ModelAndView welcomePage() {
+	@RequestMapping("/hello")
+	public ModelAndView hello() {
 		return new ModelAndView("hello", "message", "shubham bhatt");
 	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/cityToSearch")
@@ -43,7 +52,7 @@ public class WebsiteController {
 
 		Set<Screening> allMovieShowingInACity = new HashSet<Screening>();
 
-		ResponseEntity<Screening[]> screening = template.getForEntity("http://localhost:9090/screenings",
+		ResponseEntity<Screening[]> screening = template.getForEntity("http://localhost:9191/screenings",
 				Screening[].class);
 
 		List<Screening> allScreenings = Arrays.asList(screening.getBody());
@@ -62,39 +71,39 @@ public class WebsiteController {
 
 	@RequestMapping("/getMovieDetails")
 	public ModelAndView getMovie(@RequestParam String movieName) {
-		Movie movie =	template.getForObject("http://localhost:8585/movies/"+movieName, Movie.class);
+		Movie movie = template.getForObject("http://localhost:8585/movies/" + movieName, Movie.class);
 		return new ModelAndView("movieDetail", "movie", movie);
 	}
+
 	
-//Wallet related 
-	@RequestMapping("/DepositForm")
-	public String depositForm() {
-		return "DepositForm";
+	@RequestMapping("/theatreShowingMovie")
+	public void showTheatres() {
+		
 	}
+	// Wallet related
 
-	@RequestMapping("/deposit")
-	public String deposit(@ModelAttribute Ewallet wallet, Model model) {
-		// restTemplate.postForEntity("http://localhost:1111/ewallets/", wallet, null);
-		template.put(
-				"http://localhost:1111/ewallets/" + wallet.getProfileId() + "?amount=" + wallet.getCurrentBalance(),
-				null);
-		model.addAttribute("message", "Successfully added money!");
-		return "DepositForm";
-	}
-
-	@RequestMapping("/WithdrawForm")
-	public String withdrawForm() {
-		return "WithdrawForm";
-	}
-
-	@RequestMapping("/withdraw")
-	public String withdraw(@ModelAttribute Ewallet wallet, Model model) {
-		// restTemplate.postForEntity("http://localhost:1111/ewallets/", wallet, null);
-		template.put("http://localhost:1111/ewallets/ewallet/" + wallet.getProfileId() + "?amount="
-				+ wallet.getCurrentBalance(), null);
-		model.addAttribute("message", "ticket booked Successfully...!");
-		return "WithdrawForm";
-	}
+	/*
+	 * @RequestMapping("/DepositForm") public String depositForm() { return
+	 * "DepositForm"; }
+	 * 
+	 * @RequestMapping("/deposit") public String deposit(@ModelAttribute Ewallet
+	 * wallet, Model model) { //
+	 * restTemplate.postForEntity("http://localhost:1111/ewallets/", wallet, null);
+	 * template.put( "http://localhost:1111/ewallets/" + wallet.getProfileId() +
+	 * "?amount=" + wallet.getCurrentBalance(), null); model.addAttribute("message",
+	 * "Successfully added money!"); return "DepositForm"; }
+	 * 
+	 * @RequestMapping("/WithdrawForm") public String withdrawForm() { return
+	 * "WithdrawForm"; }
+	 * 
+	 * @RequestMapping("/withdraw") public String withdraw(@ModelAttribute Ewallet
+	 * wallet, Model model) { //
+	 * restTemplate.postForEntity("http://localhost:1111/ewallets/", wallet, null);
+	 * template.put("http://localhost:1111/ewallets/ewallet/" +
+	 * wallet.getProfileId() + "?amount=" + wallet.getCurrentBalance(), null);
+	 * model.addAttribute("message", "ticket booked Successfully...!"); return
+	 * "WithdrawForm"; }
+	 */
 
 	/*
 	 * @RequestMapping("/StatementForm") public String statementForm() { return
